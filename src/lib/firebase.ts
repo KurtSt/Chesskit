@@ -1,5 +1,6 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
+import { getAuth } from "firebase/auth"; // Import getAuth
 
 const firebaseConfig: FirebaseOptions | undefined = process.env
   .NEXT_PUBLIC_FIREBASE_PROJECT_ID
@@ -15,6 +16,9 @@ const firebaseConfig: FirebaseOptions | undefined = process.env
   : undefined;
 
 const app = firebaseConfig ? initializeApp(firebaseConfig) : undefined;
+
+// Initialize Firebase Auth
+const auth = app ? getAuth(app) : undefined; // Add this line
 
 isSupported().then((supported) => {
   if (supported && app) {
@@ -34,3 +38,5 @@ export const logAnalyticsEvent = async (
   const analytics = getAnalytics(app);
   logEvent(analytics, eventName, eventParams);
 };
+
+export { auth }; // Export auth

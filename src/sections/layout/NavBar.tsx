@@ -10,6 +10,9 @@ import { useRouter } from "next/router";
 import NavLink from "@/components/NavLink";
 import Image from "next/image";
 import { styled } from "@mui/material/styles";
+import { useAuth } from "../../context/AuthContext";
+import NextLink from "next/link";
+import Button from "@mui/material/Button";
 
 interface Props {
   darkMode: boolean;
@@ -31,6 +34,7 @@ const StyledIconButtonLink = styled("a")({
 export default function NavBar({ darkMode, switchDarkMode }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
+  const { user, logout } = useAuth(); // Get user and logout from useAuth
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -66,12 +70,17 @@ export default function NavBar({ darkMode, switchDarkMode }: Props) {
             height={32}
           />
 
-          <NavLink href="/">
+          <NavLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
+            <Image
+              src="/favicon-32x32.png"
+              alt="Chesskit logo"
+              width={32}
+              height={32}
+            />
             <Typography
               variant="h6"
               component="div"
               sx={{
-                flexGrow: 1,
                 ml: 1,
                 fontSize: { xs: "1rem", sm: "1.25rem" },
               }}
@@ -79,6 +88,27 @@ export default function NavBar({ darkMode, switchDarkMode }: Props) {
               Chesskit
             </Typography>
           </NavLink>
+
+          <Box sx={{ flexGrow: 1 }} /> {/* This Box will push subsequent items to the right */}
+
+          {/* Auth Buttons */}
+          {user ? (
+            <>
+              <Typography sx={{ mr: 2, display: { xs: "none", sm: "block" } }}>{user.email}</Typography>
+              <Button color="inherit" onClick={logout} sx={{textTransform: "none"}}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" component={NextLink} href="/login" sx={{textTransform: "none"}}>
+                Login
+              </Button>
+              <Button color="inherit" component={NextLink} href="/register" sx={{textTransform: "none"}}>
+                Register
+              </Button>
+            </>
+          )}
 
           <StyledIconButtonLink
             href="https://discord.gg/Yr99abAcUr"
